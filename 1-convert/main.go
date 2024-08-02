@@ -13,6 +13,11 @@ const EurToRub = UsdToEur * UsdToRub
 
 var currencies = [3]string{"USD", "EUR", "RUB"}
 
+var currencyRate = map[string]map[string]float64{
+	"USD": {"EUR": UsdToEur, "RUB": 1 / UsdToRub},
+	"EUR": {"USD": 1 / UsdToEur, "RUB": 1 / EurToRub},
+	"RUB": {"USD": UsdToRub, "EUR": EurToRub}}
+
 func checkCurrency(c string) error {
 	for _, currency := range currencies {
 		if currency == c {
@@ -74,23 +79,7 @@ func requestValue(message string) float64 {
 }
 
 func calc(value float64, sourceCurrency, targetCurrency string) float64 {
-	switch {
-	case sourceCurrency == "USD" && targetCurrency == "EUR":
-		return value * UsdToEur
-	case sourceCurrency == "USD" && targetCurrency == "RUB":
-		return value / UsdToRub
-	case sourceCurrency == "EUR" && targetCurrency == "USD":
-		return value / UsdToEur
-	case sourceCurrency == "EUR" && targetCurrency == "RUB":
-		return value / EurToRub
-	case sourceCurrency == "RUB" && targetCurrency == "USD":
-		return value * UsdToRub
-	case sourceCurrency == "RUB" && targetCurrency == "EUR":
-		return value * EurToRub
-	case sourceCurrency == targetCurrency:
-		return value
-	}
-	return 0
+	return currencyRate[sourceCurrency][targetCurrency] * value
 }
 
 func main() {
