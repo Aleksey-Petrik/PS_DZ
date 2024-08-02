@@ -7,13 +7,15 @@ import (
 	"strings"
 )
 
+type currencyRateType map[string]map[string]float64
+
 const UsdToEur = 0.92305
 const UsdToRub = 0.011346
 const EurToRub = UsdToEur * UsdToRub
 
 var currencies = [3]string{"USD", "EUR", "RUB"}
 
-var currencyRate = map[string]map[string]float64{
+var currencyRate = currencyRateType{
 	"USD": {"EUR": UsdToEur, "RUB": 1 / UsdToRub},
 	"EUR": {"USD": 1 / UsdToEur, "RUB": 1 / EurToRub},
 	"RUB": {"USD": UsdToRub, "EUR": EurToRub}}
@@ -78,8 +80,8 @@ func requestValue(message string) float64 {
 	}
 }
 
-func calc(value float64, sourceCurrency, targetCurrency string) float64 {
-	return currencyRate[sourceCurrency][targetCurrency] * value
+func calc(c *currencyRateType, value float64, sourceCurrency, targetCurrency string) float64 {
+	return value * (*c)[sourceCurrency][targetCurrency]
 }
 
 func main() {
@@ -87,5 +89,5 @@ func main() {
 	targetCurrency := requestCurrency("Введите целевую валюту [" + getAvalibleCurrencies(sourceCurrency) + "]: ")
 	value := requestValue("Ведите количество единиц валюты: ")
 
-	fmt.Println(calc(value, sourceCurrency, targetCurrency))
+	fmt.Println(calc(&currencyRate, value, sourceCurrency, targetCurrency))
 }
