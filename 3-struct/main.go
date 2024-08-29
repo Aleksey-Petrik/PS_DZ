@@ -5,6 +5,10 @@ import (
 	"main/storage"
 )
 
+func printDB(db storage.DB) {
+	db.Print()
+}
+
 func main() {
 
 	s, err := storage.NewStorage("storage.json")
@@ -16,6 +20,6 @@ func main() {
 				b2 := bins.Bin{ID: "2", Private: false, CreateAt: time.Now(), Name: "Test 2"}
 				s.AddBin(b2)*/
 
-		s.Print()
+		printDB(s)
 	}
 }
