@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"main/api"
+	"main/config"
 	"main/storage"
 )
 
@@ -10,6 +12,8 @@ func printDB(db storage.DB) {
 }
 
 func main() {
+	cfg := config.NewConfig()
+	api.NewApi(*cfg)
 
 	s, err := storage.NewStorage("storage.json")
 	if err != nil {
